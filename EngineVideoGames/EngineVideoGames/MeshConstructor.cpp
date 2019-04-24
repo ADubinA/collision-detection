@@ -9,6 +9,8 @@
 
 MeshConstructor::MeshConstructor(const int type)
 {
+	
+
 	switch (type)
 	{
 	case Axis:	
@@ -26,6 +28,7 @@ MeshConstructor::MeshConstructor(const int type)
 	default:
 		break;
 	}
+
 	
 }
 
@@ -78,8 +81,55 @@ void MeshConstructor::make_tree(std::vector<glm::vec3> positions)
 	tree.makeTree(point_list);
 	//tree.printTree(tree.getRoot());
 
-}
+	// calc center of the base bounding box
+	glm::vec3 center = glm::vec3(0);
+	for (auto& position : positions)
+		center += position;
+	center = 1.0f / positions.size() * center;
 
+	// calc size of the base bounding box
+	glm::vec3 size = glm::vec3(0);
+	for (auto& position : positions)
+		size = glm::max(size,glm::abs(position-center));
+
+	BoundingBox *base = new BoundingBox(center, size);
+
+	this->bvh.box = base;
+	this->bvh.left= make_BVH(*this->tree.getRoot(), *base, true, 0);
+	this->bvh.right=make_BVH(*this->tree.getRoot(), *base, false, 0);
+}
+BVH* MeshConstructor::make_BVH (Node node, BoundingBox daddy, bool is_left, int level)
+{
+	int axis = level % 3;
+	glm::vec3 center = daddy.center;
+	glm::vec3 size = daddy.size;
+	BVH *bvh = new BVH();
+
+	
+	if (is_left)
+	{
+		center[axis] = ((daddy.center[axis] + daddy.size[axis]) + node.data[axis])/2.0f;
+		size[axis] = abs((daddy.center[axis] + daddy.size[axis]) - center[axis]);
+	}
+	else
+	{
+		center[axis] = ((daddy.center[axis] - daddy.size[axis]) + node.data[axis]) / 2.0f;
+		size[axis] = abs((daddy.center[axis] - daddy.size[axis]) - center[axis]);
+	}
+
+	bvh->box = new BoundingBox(center, size) ;
+	if (node.left != nullptr)
+	{
+		bvh->left=make_BVH(*(node.left), *bvh->box, true, level + 1);
+	}
+	if (node.right != nullptr)
+	{
+		bvh->right= make_BVH(*(node.right), *bvh->box, false, level + 1);
+	}
+	return bvh;
+	
+
+}
 void MeshConstructor::InitLine(IndexedModel &model){
 	
 	int verticesNum = model.positions.size();
@@ -157,4 +207,12 @@ void MeshConstructor::CopyMesh(const MeshConstructor &mesh){
 
 	is2D = true;
 	
+}
+
+BVH::BVH()
+{
+	this->box = new BoundingBox(glm::vec3(0), glm::vec3(0));
+	this->left = nullptr;
+	this->right = nullptr;
+
 }

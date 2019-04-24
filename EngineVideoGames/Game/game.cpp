@@ -52,7 +52,7 @@ void Game::Rec_Create_Bounding_Box(std::vector<TransStruct>* data,Node* root, in
 	
 
 	pickedShape = shapes.size() - 1;
-	if (level ==1)
+	if (level ==0)
 	{
 		shapes[pickedShape]->Unhide();
 	}
@@ -89,6 +89,37 @@ void Game::Rec_Create_Bounding_Box(std::vector<TransStruct>* data,Node* root, in
 	}
 }
 
+void Game::CreateBoundingBoxes(BVH box_tree, int parent, int level)
+{
+	this->addShapeCopy(BOUNDING_BOX_INDEX, -1, LINE_LOOP);
+	pickedShape = shapes.size() - 1;
+	shapes[pickedShape]->Hide();
+
+	shapeTransformation(xScale, box_tree.box->size.x);
+	shapeTransformation(yScale, box_tree.box->size.y);
+	shapeTransformation(zScale, box_tree.box->size.z);
+
+	shapeTransformation(xLocalTranslate, box_tree.box->center.x);
+	shapeTransformation(yLocalTranslate, box_tree.box->center.y);
+	shapeTransformation(zLocalTranslate, box_tree.box->center.z);
+
+	chainParents[pickedShape] = parent;
+
+	if (level <5)
+	{
+		shapes[pickedShape]->Unhide();
+	}
+	if (box_tree.left != nullptr)
+	{
+		CreateBoundingBoxes(*box_tree.left, parent, level+1);
+	}
+	if (box_tree.right != nullptr)
+	{
+		CreateBoundingBoxes(*box_tree.right, parent, level+1);
+	}
+}
+
+
 void Game::Init()
 {
 	std::vector<TransStruct> data;
@@ -104,10 +135,9 @@ void Game::Init()
 		Shape *shape = shapes[i];
 		if (shape->mode == TRIANGLES)
 		{
-			Kdtree* tree = &shape->mesh->tree;
-			Node* root = tree->getRoot();
+			BVH *bvh = &shape->mesh->bvh;
 			
-			Rec_Create_Bounding_Box(&data,root,i, 0,true);
+			CreateBoundingBoxes(*bvh, i, 0);
 
 
 		}

@@ -5,10 +5,18 @@
 #include "Mesh.h"
 #include "bezier1D.h"
 #include "kdtree.h"
+class BVH {
+public:
+	BoundingBox *box;
+	struct BVH *left;
+	struct BVH *right;
 
+	BVH();
+};
 
 class MeshConstructor
 {
+	
 	VertexArray vao;
 	IndexBuffer *ib;
 	//TO DO: add bounding box data base and build it in the constructor 
@@ -16,6 +24,7 @@ class MeshConstructor
 	bool is2D;
 	int unsigned indicesNum;
 	void make_tree(std::vector<glm::vec3> point_list);
+	BVH* MeshConstructor::make_BVH(Node node, BoundingBox daddy, bool is_left, int level);
 	void InitLine(IndexedModel &model);
 	void InitMesh(IndexedModel &model);
 	void CopyMesh(const MeshConstructor &mesh);
@@ -24,6 +33,8 @@ class MeshConstructor
 	
 public:
 	Kdtree tree;
+
+	BVH bvh;
 
 	//TO DO: add collision detection function which get other MeshConstructor and Mat4 of related transformasions. The function may return a pointer to the relevant Bounding Box when collide
 	enum SimpleShapes
