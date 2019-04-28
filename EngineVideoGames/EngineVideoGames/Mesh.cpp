@@ -254,133 +254,138 @@ BoundingBox::BoundingBox(glm::vec3 center, glm::vec3 size)
 
 }
 
-bool BoundingBox::checkCollision(BoundingBox other)
+void BoundingBox::setPickShape(int index)
+{
+	this->pickShape = index;
+}
+
+bool BoundingBox::checkCollision(BoundingBox* other)
 {
 	float R0, R1, R;
-	glm::vec3 D = this->center - other.center;
+	glm::vec3 D = this->center - other->center;
 	glm::mat3x3 c = glm::mat3x3(
-		glm::vec3(glm::dot(this->xInit, other.xInit), glm::dot(this->xInit, other.yInit), glm::dot(this->xInit, other.zInit)),
-		glm::vec3(glm::dot(this->yInit, other.xInit), glm::dot(this->yInit, other.yInit), glm::dot(this->yInit, other.zInit)),
-		glm::vec3(glm::dot(this->zInit, other.xInit), glm::dot(this->zInit, other.yInit), glm::dot(this->zInit, other.zInit))
+		glm::vec3(glm::dot(this->xInit, other->xInit), glm::dot(this->xInit, other->yInit), glm::dot(this->xInit, other->zInit)),
+		glm::vec3(glm::dot(this->yInit, other->xInit), glm::dot(this->yInit, other->yInit), glm::dot(this->yInit, other->zInit)),
+		glm::vec3(glm::dot(this->zInit, other->xInit), glm::dot(this->zInit, other->yInit), glm::dot(this->zInit, other->zInit))
 								);
 
 	//test A0
 	R0 = this->size.x;
-	R1 = other.size.x*glm::abs(c[0][0]) +
-		 other.size.y*glm::abs(c[0][1]) + 
-		 other.size.z*glm::abs(c[0][2]);
+	R1 = other->size.x*glm::abs(c[0][0]) +
+		 other->size.y*glm::abs(c[0][1]) + 
+		 other->size.z*glm::abs(c[0][2]);
 	R= glm::abs(glm::dot(xInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A1
 	R0 = this->size.y;
-	R1 = other.size.x*glm::abs(c[1][0]) +
-		 other.size.y*glm::abs(c[1][1]) +
-		 other.size.z*glm::abs(c[1][2]);
+	R1 = other->size.x*glm::abs(c[1][0]) +
+		 other->size.y*glm::abs(c[1][1]) +
+		 other->size.z*glm::abs(c[1][2]);
 	R = glm::abs(glm::dot(yInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A2
 	R0 = this->size.z;
-	R1 = other.size.x*glm::abs(c[2][0]) +
-		 other.size.y*glm::abs(c[2][1]) +
-	     other.size.z*glm::abs(c[2][2]);
+	R1 = other->size.x*glm::abs(c[2][0]) +
+		 other->size.y*glm::abs(c[2][1]) +
+	     other->size.z*glm::abs(c[2][2]);
 	R = glm::abs(glm::dot(zInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test B0
-	R1 = other.size.x;
+	R1 = other->size.x;
 	R0 = this->size.x*glm::abs(c[0][0]) +
 		 this->size.y*glm::abs(c[1][0]) +
 		 this->size.z*glm::abs(c[2][0]);
-	R = glm::abs(glm::dot(other.xInit, D));
+	R = glm::abs(glm::dot(other->xInit, D));
 	if (R > R0 + R1)
 		return false; 
 	//test B1
-	R1 = other.size.y;
+	R1 = other->size.y;
 	R0 = this->size.x*glm::abs(c[0][1]) +
 		 this->size.y*glm::abs(c[1][1]) +
 		 this->size.z*glm::abs(c[2][1]);
-	R = glm::abs(glm::dot(other.yInit, D));
+	R = glm::abs(glm::dot(other->yInit, D));
 	if (R > R0 + R1)
 		return false; 
 	//test B1
-	R1 = other.size.z;
+	R1 = other->size.z;
 	R0 = this->size.x*glm::abs(c[0][2]) +
 		 this->size.y*glm::abs(c[1][2]) +
 		 this->size.z*glm::abs(c[2][2]);
-	R = glm::abs(glm::dot(other.zInit, D));
+	R = glm::abs(glm::dot(other->zInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A0xB0
 	R0 = this->size.y*glm::abs(c[2][0]) +
 		 this->size.z*glm::abs(c[1][0]);
-	R1 = other.size.y*glm::abs(c[0][2]) +
-		 other.size.z*glm::abs(c[0][1]);
+	R1 = other->size.y*glm::abs(c[0][2]) +
+		 other->size.z*glm::abs(c[0][1]);
 	R = glm::abs(c[1][0]*glm::dot(zInit, D)-c[2][0]*glm::dot(yInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A0xB1
 	R0 = this->size.y*glm::abs(c[2][1]) +
 		this->size.z*glm::abs(c[1][1]);
-	R1 = other.size.x*glm::abs(c[0][2]) +
-		other.size.z*glm::abs(c[0][0]);
+	R1 = other->size.x*glm::abs(c[0][2]) +
+		other->size.z*glm::abs(c[0][0]);
 	R = glm::abs(c[1][1] * glm::dot(zInit, D) - c[2][1] * glm::dot(yInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A0xB2
 	R0 = this->size.y*glm::abs(c[2][2]) +
 		this->size.z*glm::abs(c[1][2]);
-	R1 = other.size.x*glm::abs(c[0][1]) +
-		other.size.y*glm::abs(c[0][0]);
+	R1 = other->size.x*glm::abs(c[0][1]) +
+		other->size.y*glm::abs(c[0][0]);
 	R = glm::abs(c[1][2] * glm::dot(zInit, D) - c[2][2] * glm::dot(yInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A1xB0
 	R0 = this->size.x*glm::abs(c[2][0]) +
 		this->size.z*glm::abs(c[0][0]);
-	R1 = other.size.y*glm::abs(c[1][2]) +
-		other.size.z*glm::abs(c[1][1]);
+	R1 = other->size.y*glm::abs(c[1][2]) +
+		other->size.z*glm::abs(c[1][1]);
 	R = glm::abs(c[2][0] * glm::dot(xInit, D) - c[0][0] * glm::dot(zInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A1xB1
 	R0 = this->size.x*glm::abs(c[2][1]) +
 		this->size.z*glm::abs(c[0][1]);
-	R1 = other.size.x*glm::abs(c[1][2]) +
-		other.size.z*glm::abs(c[1][0]);
+	R1 = other->size.x*glm::abs(c[1][2]) +
+		other->size.z*glm::abs(c[1][0]);
 	R = glm::abs(c[2][1] * glm::dot(xInit, D) - c[0][1] * glm::dot(zInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A1xB2
 	R0 = this->size.x*glm::abs(c[2][2]) +
 		this->size.z*glm::abs(c[0][2]);
-	R1 = other.size.x*glm::abs(c[1][1]) +
-		other.size.y*glm::abs(c[1][0]);
+	R1 = other->size.x*glm::abs(c[1][1]) +
+		other->size.y*glm::abs(c[1][0]);
 	R = glm::abs(c[2][2] * glm::dot(xInit, D) - c[0][2] * glm::dot(zInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A2xB0
 	R0 = this->size.x*glm::abs(c[1][0]) +
 		this->size.y*glm::abs(c[0][0]);
-	R1 = other.size.y*glm::abs(c[2][2]) +
-		other.size.z*glm::abs(c[2][1]);
+	R1 = other->size.y*glm::abs(c[2][2]) +
+		other->size.z*glm::abs(c[2][1]);
 	R = glm::abs(c[0][0] * glm::dot(yInit, D) - c[1][0] * glm::dot(xInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A2xB1
 	R0 = this->size.x*glm::abs(c[1][1]) +
 		this->size.y*glm::abs(c[0][1]);
-	R1 = other.size.x*glm::abs(c[2][2]) +
-		other.size.z*glm::abs(c[2][0]);
+	R1 = other->size.x*glm::abs(c[2][2]) +
+		other->size.z*glm::abs(c[2][0]);
 	R = glm::abs(c[0][1] * glm::dot(yInit, D) - c[1][1] * glm::dot(xInit, D));
 	if (R > R0 + R1)
 		return false;
 	//test A2xB2
 	R0 = this->size.x*glm::abs(c[1][2]) +
 		this->size.y*glm::abs(c[0][2]);
-	R1 = other.size.x*glm::abs(c[2][1]) +
-		other.size.y*glm::abs(c[2][0]);
+	R1 = other->size.x*glm::abs(c[2][1]) +
+		other->size.y*glm::abs(c[2][0]);
 	R = glm::abs(c[0][2] * glm::dot(yInit, D) - c[1][2] * glm::dot(xInit, D));
 	if (R > R0 + R1)
 		return false;

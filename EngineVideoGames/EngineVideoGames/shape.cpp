@@ -8,6 +8,7 @@ Shape::Shape(const Shape& shape,unsigned int mode)
 {
 	
 	mesh = new MeshConstructor(*shape.mesh);
+	mesh->bvh = shape.mesh->bvh;
 	//tex = shape.tex;
 	isCopy = true;
 	this->mode = mode;
@@ -42,6 +43,14 @@ Shape::Shape(Bezier1D *curve, unsigned int xResolution,unsigned int yResolution,
 void Shape::AddTexture(const std::string& textureFileName)
 {
 	tex = new Texture(textureFileName);
+}
+
+int Shape::checkCollision(Shape * other)
+{
+	this->makeTrans();
+	//TODO fix that shit yo
+	this->mesh->checkCollision(&other->mesh->bvh,&this->mesh->bvh, this->makeTrans());
+	return 0;
 }
 
 

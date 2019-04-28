@@ -93,6 +93,7 @@ void Game::CreateBoundingBoxes(BVH box_tree, int parent, int level)
 {
 	this->addShapeCopy(BOUNDING_BOX_INDEX, -1, LINE_LOOP);
 	pickedShape = shapes.size() - 1;
+	box_tree.box->setPickShape(pickedShape);
 	shapes[pickedShape]->Hide();
 
 	shapeTransformation(xScale, box_tree.box->size.x);
@@ -105,7 +106,7 @@ void Game::CreateBoundingBoxes(BVH box_tree, int parent, int level)
 
 	chainParents[pickedShape] = parent;
 
-	if (level <5)
+	if (level <1)
 	{
 		shapes[pickedShape]->Unhide();
 	}
@@ -126,10 +127,11 @@ void Game::Init()
 	addShape(Axis,-1,LINES);
 	addShape(Octahedron,-1,TRIANGLES);
 	//addShapeFromFile("../res/objs/torus.obj",-1,TRIANGLES);
-	//addShapeCopy(1,-1,TRIANGLES);
 	addShape(Cube,1,LINE_LOOP);
 	shapes[BOUNDING_BOX_INDEX]->Hide();
+	addShapeCopy(1, -1, TRIANGLES);
 	//addShapeCopy(3,2,LINE_LOOP);
+
 	for (int i=0; i<this->shapes.size(); i++)
 	{
 		Shape *shape = shapes[i];
@@ -180,9 +182,9 @@ void Game::Init()
 	//pickedShape = 2;
 	//shapeTransformation(zLocalRotate,45);	
 
-	//pickedShape = 1;
+	pickedShape = 5;
 
-	//shapeTransformation(zGlobalTranslate,-10);
+	shapeTransformation(yGlobalTranslate,3);
 	//shapeTransformation(yScale,3.30f);
 	//shapeTransformation(xScale,3.30f);
 	//shapeTransformation(zScale,3.30f);
@@ -205,7 +207,8 @@ void Game::Update(const glm::mat4 &MVP,const glm::mat4 &Normal,Shader *s)
 	s->SetUniformMat4f("MVP", MVP);
 	s->SetUniformMat4f("Normal", Normal);
 	s->SetUniform4f("lightDirection", 0.0f , 0.0f, -1.0f, 1.0f);
-	s->SetUniform4f("lightColor",r/255.0f, g/255.0f, b/255.0f,1.0f);		
+	s->SetUniform4f("lightColor",r/255.0f, g/255.0f, b/255.0f,1.0f);	
+	collisionDetection();
 }
 
 void Game::WhenRotate()
@@ -227,10 +230,10 @@ void Game::Motion()
 {
 	if(isActive)
 	{
-		/*int p = pickedShape;
-		pickedShape = 2;
+		int p = pickedShape;
+		pickedShape = 3;
 		shapeTransformation(zLocalRotate,0.45);
-		pickedShape = p;*/
+		pickedShape = p;
 	}
 }
 

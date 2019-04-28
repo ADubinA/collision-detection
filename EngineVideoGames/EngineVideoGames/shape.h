@@ -28,6 +28,8 @@ public:
 
 	void AddTexture(const std::string& textureFileName);
 
+	int Shape::checkCollision(Shape * other);
+
 	void Draw( const Shader& shader);
 
 	inline void Hide() {toRender = false;}

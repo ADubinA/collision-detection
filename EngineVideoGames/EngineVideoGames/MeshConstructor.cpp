@@ -1,5 +1,6 @@
 #define GLEW_STATIC
 #include <GL\glew.h>
+#include <queue>
 #include "MeshConstructor.h"
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
@@ -35,6 +36,16 @@ MeshConstructor::MeshConstructor(const int type)
 MeshConstructor::MeshConstructor(const std::string& fileName)
 {
 	InitMesh(OBJModel(fileName).ToIndexedModel());
+}
+
+int MeshConstructor::checkCollision(BVH* other,BVH* self, glm::mat4 orientation)
+{
+	std::queue<BVH> self_queue;
+	std::queue<BVH> other_queue;
+	BVH* self_curr=self;
+	BVH* other_curr=other;
+	while (self_curr->box->checkCollision(other_curr->));
+
 }
 
 MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int resT,unsigned int resS)

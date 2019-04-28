@@ -69,8 +69,10 @@ public:
 	glm::vec3 xInit;      // x axis of the box. default value (1,0,0)		  
 	glm::vec3 yInit;      // y axis of the box. default value (0,1,0)		 
 	glm::vec3 zInit;	  // z axis of the box. default value (0,0,1)
+	int pickShape;
 	BoundingBox(glm::vec3 center, glm::vec3 size);
-	bool BoundingBox::checkCollision(BoundingBox other);
+	void setPickShape(int index);
+	bool BoundingBox::checkCollision(BoundingBox* other);
 
 };
 

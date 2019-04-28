@@ -70,6 +70,29 @@ using namespace glm;
 		shapes.push_back(new Shape(*shapes[indx],mode));
 	}
 
+	void Scene::collisionDetection()
+	{
+		int picked;
+		for (auto& shape1 : shapes)
+		{
+			if (shape1->mode == TRIANGLES)
+			{
+				for (auto& shape2 : shapes)
+				{
+					// TODO check that equality is very true
+					if (shape2->mode == TRIANGLES && &shape1!=&shape2)
+					{
+						picked = shape1->checkCollision(shape2);
+						if (picked >= 0)
+						{
+							shapes[picked]->Unhide();
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void Scene::addShader(const std::string& fileName)
 	{
 		shaders.push_back(new Shader(fileName));

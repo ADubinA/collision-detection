@@ -50,7 +50,9 @@ public:
 	MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int resT,unsigned int resS);
 	MeshConstructor(const MeshConstructor &mesh);
 	MeshConstructor(const std::string& fileName);
-
+	
+	// returns the pickshape index of the collision. if no collision, return -1
+	int MeshConstructor::checkCollision(BVH* other, BVH* self, glm::mat4 orientation);
 	void Bind() {vao.Bind();}
 	void Unbind() {vao.Unbind();}
 	inline unsigned int GetIndicesNum(){return indicesNum;}
