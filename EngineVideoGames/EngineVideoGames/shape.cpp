@@ -49,7 +49,7 @@ int Shape::checkCollision(Shape * other)
 {
 	this->makeTrans();
 	//TODO fix that shit yo
-	this->mesh->checkCollision(&other->mesh->bvh,&this->mesh->bvh, this->makeTrans());
+	this->mesh->checkCollision(&other->mesh->bvh, this->makeTrans());
 	return 0;
 }
 

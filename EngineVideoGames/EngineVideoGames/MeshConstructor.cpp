@@ -38,14 +38,31 @@ MeshConstructor::MeshConstructor(const std::string& fileName)
 	InitMesh(OBJModel(fileName).ToIndexedModel());
 }
 
-int MeshConstructor::checkCollision(BVH* other,BVH* self, glm::mat4 orientation)
+int MeshConstructor::checkCollision(BVH* other, glm::mat4 orientation)
 {
-	std::queue<BVH> self_queue;
-	std::queue<BVH> other_queue;
-	BVH* self_curr=self;
-	BVH* other_curr=other;
-	while (self_curr->box->checkCollision(other_curr->));
+	std::queue<BVH*> self_queue;
+	BVH* self_curr=&this->bvh;
+	self_queue.push(self_curr);
+	while (!self_queue.empty()) {
+		self_curr = self_queue.front();
+		self_queue.pop();
+		if (self_curr->box->checkCollision(other->box)&& other->box->checkCollision(self_curr->box)) {
+			if (self_curr->left != nullptr && self_curr->right != nullptr) {
+				self_queue.push(self_curr->left);
+				self_queue.push(self_curr->right);
+			}
+			else if (self_curr->left != nullptr)
+				self_queue.push(self_curr->left);
+			else if (self_curr->right != nullptr)
+				self_queue.push(self_curr->right);
+			else
+				return self_curr->box->pickShape;
+			
+		}
+		
+	}
 
+	return -1;
 }
 
 MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int resT,unsigned int resS)
