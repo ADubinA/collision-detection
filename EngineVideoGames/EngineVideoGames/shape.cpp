@@ -47,10 +47,9 @@ void Shape::AddTexture(const std::string& textureFileName)
 
 int Shape::checkCollision(Shape * other)
 {
-	this->makeTrans();
-	//TODO fix that shit yo
-	this->mesh->checkCollision(&other->mesh->bvh, this->makeTrans());
-	return 0;
+	return this->mesh->checkCollision(other->mesh, this->GetRot(), glm::translate(glm::mat4(1),glm::vec3(this->getTraslate())),
+											other->GetRot(), glm::translate(glm::mat4(1), glm::vec3(other->getTraslate())));
+	 
 }
 
 

@@ -38,7 +38,12 @@ MeshConstructor::MeshConstructor(const std::string& fileName)
 	InitMesh(OBJModel(fileName).ToIndexedModel());
 }
 
-int MeshConstructor::checkCollision(BVH* other, glm::mat4 orientation)
+int MeshConstructor::checkCollision(MeshConstructor* other, glm::mat4 self_trans,
+															glm::mat4 self_rot,
+															glm::mat4 other_trans,
+															glm::mat4 other_rot)
+
+
 {
 	std::queue<BVH*> self_queue;
 	BVH* self_curr=&this->bvh;
@@ -46,7 +51,12 @@ int MeshConstructor::checkCollision(BVH* other, glm::mat4 orientation)
 	while (!self_queue.empty()) {
 		self_curr = self_queue.front();
 		self_queue.pop();
-		if (self_curr->box->checkCollision(other->box)&& other->box->checkCollision(self_curr->box)) {
+		other->bvh.box->updateDynamic(other_rot, other_trans);
+		this->bvh.box->updateDynamic(self_rot, self_trans);
+		if (self_curr->box->checkCollision(other->bvh.box)&&
+			(other->checkCollision(this, other_trans, other_rot, self_trans,self_rot)!=-1)) 
+
+		{
 			if (self_curr->left != nullptr && self_curr->right != nullptr) {
 				self_queue.push(self_curr->left);
 				self_queue.push(self_curr->right);

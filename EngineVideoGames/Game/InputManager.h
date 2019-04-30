@@ -39,23 +39,21 @@
 					else
 						scn->Deactivate();
 				break;
-								case GLFW_KEY_RIGHT:
+					case GLFW_KEY_RIGHT:
 					//scn->shapeTransformation(scn->zGlobalRotate,-20.1f);
-					scn->shapeTransformation(scn->zLocalRotate,5.1f);
-//						cout<< "right: "<<endl;
+						scn->shapeTransformation(scn->xGlobalTranslate,0.1);
+						//scn->shapeTransformation(scn->yLocalTranslate,0.1);
+						//scn->shapeTransformation(scn->zLocalTranslate,0.1);
 					break;
 				case GLFW_KEY_LEFT:
-					//scn->shapeTransformation(scn->zGlobalRotate,20.1f);
-					scn->shapeTransformation(scn->zLocalRotate,-5.0f);
-//					cout<< "left: "<<endl;
+					scn->shapeTransformation(scn->xGlobalTranslate, -0.1);
+
 					break;
 				case GLFW_KEY_UP:
-					//cout<< "up: "<<endl;
-					scn->shapeTransformation(scn->xLocalRotate,5.f);
+					scn->shapeTransformation(scn->yGlobalTranslate, 0.1);
 					break;
 				case GLFW_KEY_DOWN:
-					scn->shapeTransformation(scn->xGlobalRotate,-5.f);
-					//cout<< "down: "<<endl;
+					scn->shapeTransformation(scn->yGlobalTranslate, -0.1);
 					break;
 
 			default:

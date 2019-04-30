@@ -246,11 +246,11 @@ IndexedModel OctahedronGenerator()
 
 BoundingBox::BoundingBox(glm::vec3 center, glm::vec3 size)
 {
-	this->center = center;
 	this->size = size;
-	this->xInit = glm::vec3(1, 0, 0);      // x axis of the box. default value (1,0,0)		
-	this->yInit = glm::vec3(0, 1, 0);      // y axis of the box. default value (0,1,0)		
-	this->zInit = glm::vec3(0, 0, 1);	   // z axis of the box. default value (0,0,1)
+	this->static_center = center;
+	this->static_xInit = glm::vec3(1, 0, 0);      // x axis of the box. default value (1,0,0)		
+	this->static_yInit = glm::vec3(0, 1, 0);      // y axis of the box. default value (0,1,0)		
+	this->static_zInit = glm::vec3(0, 0, 1);	   // z axis of the box. default value (0,0,1)
 
 }
 
@@ -389,4 +389,13 @@ bool BoundingBox::checkCollision(BoundingBox* other)
 	R = glm::abs(c[0][2] * glm::dot(yInit, D) - c[1][2] * glm::dot(xInit, D));
 	if (R > R0 + R1)
 		return false;
+}
+
+void BoundingBox::updateDynamic(glm::mat4 rotmat, glm::mat4 transmat)
+{
+	this->center = glm::vec3(transmat*glm::vec4(this->static_center, 0));
+	this->xInit  = glm::vec3(rotmat*  glm::vec4(this->static_xInit , 0));
+	this->yInit  = glm::vec3(rotmat*  glm::vec4(this->static_yInit , 0));
+	this->zInit  = glm::vec3(rotmat*  glm::vec4(this->static_zInit , 0));
+
 }

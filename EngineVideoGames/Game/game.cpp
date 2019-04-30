@@ -184,7 +184,7 @@ void Game::Init()
 
 	pickedShape = 5;
 
-	shapeTransformation(yGlobalTranslate,3);
+	//shapeTransformation(yGlobalTranslate,3);
 	//shapeTransformation(yScale,3.30f);
 	//shapeTransformation(xScale,3.30f);
 	//shapeTransformation(zScale,3.30f);
