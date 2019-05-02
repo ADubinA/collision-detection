@@ -6,6 +6,7 @@
 #include "IndexBuffer.hpp"
 #include "bezier2D.h"
 #include "obj_loader.h"
+#include <iostream>
 
 
 MeshConstructor::MeshConstructor(const int type)
@@ -38,7 +39,7 @@ MeshConstructor::MeshConstructor(const std::string& fileName)
 	InitMesh(OBJModel(fileName).ToIndexedModel());
 }
 
-int MeshConstructor::checkCollision(MeshConstructor* other, glm::mat4 self_trans,
+int MeshConstructor::checkCollision(BVH* other, glm::mat4 self_trans,
 															glm::mat4 self_rot,
 															glm::mat4 other_trans,
 															glm::mat4 other_rot)
@@ -48,15 +49,18 @@ int MeshConstructor::checkCollision(MeshConstructor* other, glm::mat4 self_trans
 	std::queue<BVH*> self_queue;
 	BVH* self_curr=&this->bvh;
 	self_queue.push(self_curr);
+	int counter = 0;
 	while (!self_queue.empty()) {
-		self_curr = self_queue.front();
+		counter++;
+		self_curr = self_queue.back();
 		self_queue.pop();
-		other->bvh.box->updateDynamic(other_rot, other_trans);
+		other->box->updateDynamic(other_rot, other_trans);
 		this->bvh.box->updateDynamic(self_rot, self_trans);
-		if (self_curr->box->checkCollision(other->bvh.box)&&
-			(other->checkCollision(this, other_trans, other_rot, self_trans,self_rot)!=-1)) 
+		if (self_curr->box->checkCollision(other->box)) 
 
 		{
+			//if(counter>=100)
+			//	return self_curr->box->pickShape;
 			if (self_curr->left != nullptr && self_curr->right != nullptr) {
 				self_queue.push(self_curr->left);
 				self_queue.push(self_curr->right);
@@ -66,8 +70,10 @@ int MeshConstructor::checkCollision(MeshConstructor* other, glm::mat4 self_trans
 			else if (self_curr->right != nullptr)
 				self_queue.push(self_curr->right);
 			else
+			{
+				//std::cout << self_curr->level << std::endl;
 				return self_curr->box->pickShape;
-			
+			}
 		}
 		
 	}
@@ -139,20 +145,20 @@ void MeshConstructor::make_tree(std::vector<glm::vec3> positions)
 BVH* MeshConstructor::make_BVH (Node node, BoundingBox daddy, bool is_left, int level)
 {
 	int axis = level % 3;
-	glm::vec3 center = daddy.center;
+	glm::vec3 center = daddy.static_center;
 	glm::vec3 size = daddy.size;
 	BVH *bvh = new BVH();
 
 	
 	if (is_left)
 	{
-		center[axis] = ((daddy.center[axis] + daddy.size[axis]) + node.data[axis])/2.0f;
-		size[axis] = abs((daddy.center[axis] + daddy.size[axis]) - center[axis]);
+		center[axis] = ((daddy.static_center[axis] + daddy.size[axis]) + node.data[axis])/2.0f;
+		size[axis] = abs((daddy.static_center[axis] + daddy.size[axis]) - center[axis]);
 	}
 	else
 	{
-		center[axis] = ((daddy.center[axis] - daddy.size[axis]) + node.data[axis]) / 2.0f;
-		size[axis] = abs((daddy.center[axis] - daddy.size[axis]) - center[axis]);
+		center[axis] = ((daddy.static_center[axis] - daddy.size[axis]) + node.data[axis]) / 2.0f;
+		size[axis] = abs((daddy.static_center[axis] - daddy.size[axis]) - center[axis]);
 	}
 
 	bvh->box = new BoundingBox(center, size) ;
@@ -253,4 +259,25 @@ BVH::BVH()
 	this->left = nullptr;
 	this->right = nullptr;
 
+}
+
+BVH::BVH(BVH & bvh_other)
+{
+	this->box = new BoundingBox(bvh_other.box->static_center, bvh_other.box->size);
+	if (bvh_other.left != nullptr)
+	{
+		this->left = new BVH(*bvh_other.left);
+	}
+	else
+	{
+		this->left = nullptr;
+	}
+	if (bvh_other.right != nullptr)
+	{
+		this->right = new BVH(*bvh_other.right);
+	}
+	else
+	{
+		this->right = nullptr;
+	}
 }

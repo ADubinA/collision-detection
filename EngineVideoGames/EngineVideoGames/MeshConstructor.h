@@ -10,8 +10,10 @@ public:
 	BoundingBox *box;
 	struct BVH *left;
 	struct BVH *right;
+	int level;
 
 	BVH();
+	BVH(BVH & bvh_other);
 };
 
 class MeshConstructor
@@ -52,7 +54,7 @@ public:
 	MeshConstructor(const std::string& fileName);
 	
 	// returns the pickshape index of the collision. if no collision, return -1
-	int MeshConstructor::checkCollision(MeshConstructor* other,  glm::mat4 self_trans,
+	int MeshConstructor::checkCollision(BVH* other,  glm::mat4 self_trans,
 																 glm::mat4 self_rot, 
 																 glm::mat4 other_trans,
 																 glm::mat4 other_rot );

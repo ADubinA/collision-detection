@@ -89,34 +89,35 @@ void Game::Rec_Create_Bounding_Box(std::vector<TransStruct>* data,Node* root, in
 	}
 }
 
-void Game::CreateBoundingBoxes(BVH box_tree, int parent, int level)
+void Game::CreateBoundingBoxes(BVH * box_tree, int parent, int level)
 {
 	this->addShapeCopy(BOUNDING_BOX_INDEX, -1, LINE_LOOP);
 	pickedShape = shapes.size() - 1;
-	box_tree.box->setPickShape(pickedShape);
+	box_tree->box->setPickShape(pickedShape);
+	box_tree->level = level;
 	shapes[pickedShape]->Hide();
 
-	shapeTransformation(xScale, box_tree.box->size.x);
-	shapeTransformation(yScale, box_tree.box->size.y);
-	shapeTransformation(zScale, box_tree.box->size.z);
+	shapeTransformation(xScale, box_tree->box->size.x);
+	shapeTransformation(yScale, box_tree->box->size.y);
+	shapeTransformation(zScale, box_tree->box->size.z);
 
-	shapeTransformation(xLocalTranslate, box_tree.box->center.x);
-	shapeTransformation(yLocalTranslate, box_tree.box->center.y);
-	shapeTransformation(zLocalTranslate, box_tree.box->center.z);
+	shapeTransformation(xLocalTranslate, 2*box_tree->box->static_center.x);
+	shapeTransformation(yLocalTranslate, 2*box_tree->box->static_center.y);
+	shapeTransformation(zLocalTranslate, 2*box_tree->box->static_center.z);
 
 	chainParents[pickedShape] = parent;
 
-	if (level <1)
+	if (level ==0)
 	{
 		shapes[pickedShape]->Unhide();
 	}
-	if (box_tree.left != nullptr)
+	if (box_tree->left != nullptr && level <10)
 	{
-		CreateBoundingBoxes(*box_tree.left, parent, level+1);
+		CreateBoundingBoxes(box_tree->left, parent, level+1);
 	}
-	if (box_tree.right != nullptr)
+	if (box_tree->right != nullptr&& level <10)
 	{
-		CreateBoundingBoxes(*box_tree.right, parent, level+1);
+		CreateBoundingBoxes(box_tree->right, parent, level+1);
 	}
 }
 
@@ -126,11 +127,13 @@ void Game::Init()
 	std::vector<TransStruct> data;
 	addShape(Axis,-1,LINES);
 	addShape(Octahedron,-1,TRIANGLES);
-	//addShapeFromFile("../res/objs/torus.obj",-1,TRIANGLES);
+	//addShapeFromFile("C:/Users/karolina/Desktop/collisionDetection/EngineVideoGames/res/objs/ball.obj",-1,TRIANGLES);
 	addShape(Cube,1,LINE_LOOP);
 	shapes[BOUNDING_BOX_INDEX]->Hide();
 	addShapeCopy(1, -1, TRIANGLES);
-	//addShapeCopy(3,2,LINE_LOOP);
+
+	//addShapeCopy(3,2,LINE_LOOP);+		vao	{m_RendererID=4 }	VertexArray
+
 
 	for (int i=0; i<this->shapes.size(); i++)
 	{
@@ -139,7 +142,7 @@ void Game::Init()
 		{
 			BVH *bvh = &shape->mesh->bvh;
 			
-			CreateBoundingBoxes(*bvh, i, 0);
+			CreateBoundingBoxes(bvh, i, 0);
 
 
 		}
@@ -177,14 +180,16 @@ void Game::Init()
 	shapeTransformation(xScale,10);
 	shapeTransformation(zScale,10);
 
+
 	ReadPixel();
 
 	//pickedShape = 2;
 	//shapeTransformation(zLocalRotate,45);	
 
-	pickedShape = 5;
+	pickedShape = 3;
 
-	//shapeTransformation(yGlobalTranslate,3);
+	shapeTransformation(yGlobalTranslate,3);
+
 	//shapeTransformation(yScale,3.30f);
 	//shapeTransformation(xScale,3.30f);
 	//shapeTransformation(zScale,3.30f);

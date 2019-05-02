@@ -2,13 +2,13 @@
 #include <GL\glew.h>
 #include "shape.h"
 #include "Log.hpp"
-
+#include <iostream>
 
 Shape::Shape(const Shape& shape,unsigned int mode)
 {
 	
 	mesh = new MeshConstructor(*shape.mesh);
-	mesh->bvh = shape.mesh->bvh;
+	mesh->bvh =*new BVH (shape.mesh->bvh);
 	//tex = shape.tex;
 	isCopy = true;
 	this->mode = mode;
@@ -47,9 +47,46 @@ void Shape::AddTexture(const std::string& textureFileName)
 
 int Shape::checkCollision(Shape * other)
 {
-	return this->mesh->checkCollision(other->mesh, this->GetRot(), glm::translate(glm::mat4(1),glm::vec3(this->getTraslate())),
-											other->GetRot(), glm::translate(glm::mat4(1), glm::vec3(other->getTraslate())));
-	 
+	std::queue<BVH*> other_queue;
+	BVH* other_curr ;
+	other_queue.push(&other->mesh->bvh);
+	int picked = -1;
+	int counter = 0;
+
+	while (!other_queue.empty()) 
+	{
+		
+		counter++;
+		other_curr = other_queue.back();
+		other_queue.pop();
+		picked = this->mesh->checkCollision(other_curr,
+											glm::translate(glm::mat4(1), glm::vec3(this->getTraslate())),
+											this->GetRot(),
+											glm::translate(glm::mat4(1), glm::vec3(other->getTraslate())),
+											other->GetRot());
+		if (picked !=-1)
+
+		{
+			if (counter >= 10)
+				return picked;
+			if (other_curr->left != nullptr && other_curr->right != nullptr) {
+				other_queue.push(other_curr->left);
+				other_queue.push(other_curr->right);
+			}
+			else if (other_curr->left != nullptr)
+				other_queue.push(other_curr->left);
+			else if (other_curr->right != nullptr)
+				other_queue.push(other_curr->right);
+			else
+			{
+				std::cout << other_curr->level << std::endl;
+
+				return picked;
+			}
+		}
+	}
+	return -1;
+
 }
 
 
