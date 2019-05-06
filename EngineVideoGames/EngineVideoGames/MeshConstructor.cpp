@@ -52,7 +52,7 @@ int MeshConstructor::checkCollision(BVH* other, glm::mat4 self_trans,
 	int counter = 0;
 	while (!self_queue.empty()) {
 		counter++;
-		self_curr = self_queue.back();
+		self_curr = self_queue.front();
 		self_queue.pop();
 		other->box->updateDynamic(other_rot, other_trans);
 		self_curr->box->updateDynamic(self_rot, self_trans);
