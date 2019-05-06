@@ -97,17 +97,19 @@ void Game::CreateBoundingBoxes(BVH * box_tree, int parent, int level)
 	box_tree->level = level;
 	shapes[pickedShape]->Hide();
 
+	shapeTransformation(xLocalTranslate, box_tree->box->static_center.x);
+	shapeTransformation(yLocalTranslate, box_tree->box->static_center.y);
+	shapeTransformation(zLocalTranslate, box_tree->box->static_center.z);
+
+
 	shapeTransformation(xScale, box_tree->box->size.x);
 	shapeTransformation(yScale, box_tree->box->size.y);
 	shapeTransformation(zScale, box_tree->box->size.z);
 
-	shapeTransformation(xLocalTranslate, 2*box_tree->box->static_center.x);
-	shapeTransformation(yLocalTranslate, 2*box_tree->box->static_center.y);
-	shapeTransformation(zLocalTranslate, 2*box_tree->box->static_center.z);
-
 	chainParents[pickedShape] = parent;
 
-	if (level ==0)
+
+	if (level == 0)
 	{
 		shapes[pickedShape]->Unhide();
 	}
@@ -126,8 +128,8 @@ void Game::Init()
 {
 	std::vector<TransStruct> data;
 	addShape(Axis,-1,LINES);
-	addShape(Octahedron,-1,TRIANGLES);
-	//addShapeFromFile("C:/Users/karolina/Desktop/collisionDetection/EngineVideoGames/res/objs/ball.obj",-1,TRIANGLES);
+	//addShape(Octahedron,-1,TRIANGLES);
+	addShapeFromFile("../res/objs/ball.obj",-1,TRIANGLES);
 	addShape(Cube,1,LINE_LOOP);
 	shapes[BOUNDING_BOX_INDEX]->Hide();
 	addShapeCopy(1, -1, TRIANGLES);
@@ -172,7 +174,7 @@ void Game::Init()
 	}*/
 
 	//translate all scene away from camera
-	myTranslate(glm::vec3(0,0,-10),0);
+	myTranslate(glm::vec3(0,0,-90),0);
 
 	pickedShape = 0;
 
@@ -180,25 +182,21 @@ void Game::Init()
 	shapeTransformation(xScale,10);
 	shapeTransformation(zScale,10);
 
-
-	ReadPixel();
-
-	//pickedShape = 2;
-	//shapeTransformation(zLocalRotate,45);	
-
 	pickedShape = 3;
 
-	shapeTransformation(yGlobalTranslate,3);
+	shapeTransformation(yGlobalTranslate, 50);
+	//pickedShape = 1;
 
-	//shapeTransformation(yScale,3.30f);
-	//shapeTransformation(xScale,3.30f);
-	//shapeTransformation(zScale,3.30f);
+	//shapeTransformation(xScale, 0.1);
+	//shapeTransformation(yScale, 0.1);
+	//shapeTransformation(zScale, 0.1);
+	//pickedShape = 3;
 
-	//pickedShape =3;
-	//shapeTransformation(yScale,1.30f);
-	//shapeTransformation(xScale,1.30f);
-	//shapeTransformation(zScale,3.30f);
+	//shapeTransformation(xScale, 0.1);
+	//shapeTransformation(yScale, 0.1);
+	//shapeTransformation(zScale, 0.1);
 
+	ReadPixel();
 	pickedShape = -1;
 	Activate();
 }

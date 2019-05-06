@@ -254,6 +254,24 @@ BoundingBox::BoundingBox(glm::vec3 center, glm::vec3 size)
 
 }
 
+BoundingBox::BoundingBox(std::vector<glm::vec3> positions)
+{
+	// calc center of the base bounding box
+	this->static_center = glm::vec3(0);
+	for (auto& position : positions)
+		this->static_center += position;
+	this->static_center = 1.0f / positions.size() * this->static_center;
+
+	// calc size of the base bounding box
+	this->size = glm::vec3(0);
+	for (auto& position : positions)
+		this->size = glm::max(this->size, glm::abs(position - this->static_center));
+
+	this->static_xInit = glm::vec3(1, 0, 0);      // x axis of the box. default value (1,0,0)		
+	this->static_yInit = glm::vec3(0, 1, 0);      // y axis of the box. default value (0,1,0)		
+	this->static_zInit = glm::vec3(0, 0, 1);	   // z axis of the box. default value (0,0,1)
+}
+
 void BoundingBox::setPickShape(int index)
 {
 	this->pickShape = index;

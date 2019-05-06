@@ -2,6 +2,7 @@
 #include "glm/glm.hpp"
 #include <vector>
 
+
 class IndexedModel
 {
 public:
@@ -62,7 +63,6 @@ struct LineVertex
 class BoundingBox
 {
 
-	//TODO: Add constructor and checkCollision function
 public:
 	glm::vec3 center;     // center coordinates
 	glm::vec3 static_center;
@@ -76,7 +76,9 @@ public:
 
 	int pickShape;
 	BoundingBox(glm::vec3 center, glm::vec3 size);
+	BoundingBox(std::vector<glm::vec3> positions);
 	void setPickShape(int index);
+
 	bool BoundingBox::checkCollision(BoundingBox* other);
 	void BoundingBox::updateDynamic(glm::mat4 rotmat, glm::mat4 transmat);
 

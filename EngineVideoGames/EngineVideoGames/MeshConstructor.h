@@ -5,6 +5,8 @@
 #include "Mesh.h"
 #include "bezier1D.h"
 #include "kdtree.h"
+#define MINIMUM_VERTCIES_FOR_BVH 1500
+
 class BVH {
 public:
 	BoundingBox *box;
@@ -26,7 +28,10 @@ class MeshConstructor
 	bool is2D;
 	int unsigned indicesNum;
 	void make_tree(std::vector<glm::vec3> point_list);
+	// old function
 	BVH* MeshConstructor::make_BVH(Node node, BoundingBox daddy, bool is_left, int level);
+	// new function
+	BVH* MeshConstructor::make_BVH(Node node, std::vector<glm::vec3> point_list, int level);
 	void InitLine(IndexedModel &model);
 	void InitMesh(IndexedModel &model);
 	void CopyMesh(const MeshConstructor &mesh);

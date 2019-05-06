@@ -55,7 +55,7 @@ int MeshConstructor::checkCollision(BVH* other, glm::mat4 self_trans,
 		self_curr = self_queue.back();
 		self_queue.pop();
 		other->box->updateDynamic(other_rot, other_trans);
-		this->bvh.box->updateDynamic(self_rot, self_trans);
+		self_curr->box->updateDynamic(self_rot, self_trans);
 		if (self_curr->box->checkCollision(other->box)) 
 
 		{
@@ -123,25 +123,16 @@ void MeshConstructor::make_tree(std::vector<glm::vec3> positions)
 		point_list.push_back(Node::vecType(positions[i].x, positions[i].y, positions[i].z, 1.0f));
 	}
 	tree.makeTree(point_list);
-	//tree.printTree(tree.getRoot());
+	this->bvh = *make_BVH(*tree.getRoot(), positions, 0);
+	////tree.printTree(tree.getRoot());
 
-	// calc center of the base bounding box
-	glm::vec3 center = glm::vec3(0);
-	for (auto& position : positions)
-		center += position;
-	center = 1.0f / positions.size() * center;
+	//BoundingBox *base = new BoundingBox(positions);
 
-	// calc size of the base bounding box
-	glm::vec3 size = glm::vec3(0);
-	for (auto& position : positions)
-		size = glm::max(size,glm::abs(position-center));
-
-	BoundingBox *base = new BoundingBox(center, size);
-
-	this->bvh.box = base;
-	this->bvh.left= make_BVH(*this->tree.getRoot(), *base, true, 0);
-	this->bvh.right=make_BVH(*this->tree.getRoot(), *base, false, 0);
+	//this->bvh.box = base;
+	//this->bvh.left= make_BVH(*this->tree.getRoot(), *base, true, 0);
+	//this->bvh.right=make_BVH(*this->tree.getRoot(), *base, false, 0);
 }
+// old bvh function
 BVH* MeshConstructor::make_BVH (Node node, BoundingBox daddy, bool is_left, int level)
 {
 	int axis = level % 3;
@@ -171,9 +162,56 @@ BVH* MeshConstructor::make_BVH (Node node, BoundingBox daddy, bool is_left, int 
 		bvh->right= make_BVH(*(node.right), *bvh->box, false, level + 1);
 	}
 	return bvh;
-	
-
 }
+
+
+BVH* MeshConstructor::make_BVH(Node node, std::vector<glm::vec3> point_list, int level)
+{
+	int axis = level % 3;
+
+	// TODO make distractor 
+	BVH* bvh = new BVH();
+	bvh->box = new BoundingBox(point_list);
+	bvh->level = level;
+
+	std::vector<glm::vec3> new_point_list;
+	if (node.left != nullptr && point_list.size()>MINIMUM_VERTCIES_FOR_BVH)
+	{
+		for (int i = 0; i < point_list.size(); i++)
+		{
+			if (node.data[axis] >= point_list[i][axis])
+			{
+				new_point_list.push_back(point_list[i]);
+			}
+		}
+		bvh->left = make_BVH(*node.left, new_point_list, level + 1);
+
+	}
+	else
+	{
+		bvh->left = nullptr;
+	}
+	new_point_list.clear();
+
+	if (node.right != nullptr && point_list.size() > MINIMUM_VERTCIES_FOR_BVH)
+	{
+		for (int i = 0; i < point_list.size(); i++)
+		{
+			if (node.data[axis] < point_list[i][axis])
+			{
+				new_point_list.push_back(point_list[i]);
+			}
+		}
+		bvh->right = make_BVH(*node.right, new_point_list, level + 1);
+
+	}
+	else
+	{
+		bvh->right = nullptr;
+	}
+	return bvh;
+}
+
 void MeshConstructor::InitLine(IndexedModel &model){
 	
 	int verticesNum = model.positions.size();
