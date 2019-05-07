@@ -79,12 +79,33 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\res\includes\imgui\imgui.cpp" />
+    <ClCompile Include="..\res\includes\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\res\includes\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\res\includes\imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\res\includes\imgui\imconfig.h" />
+    <ClInclude Include="..\res\includes\imgui\imgui.h" />
+    <ClInclude Include="..\res\includes\imgui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="..\res\includes\imgui\imgui_internal.h" />
+    <ClInclude Include="..\res\includes\imgui\stb_rect_pack.h" />
+    <ClInclude Include="..\res\includes\imgui\stb_textedit.h" />
+    <ClInclude Include="..\res\includes\imgui\stb_truetype.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="InputManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\res\includes\imgui\.editorconfig" />
+    <None Include="..\res\includes\imgui\.travis.yml" />
+    <None Include="..\res\includes\imgui\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\res\includes\imgui\CHANGELOG.txt" />
+    <Text Include="..\res\includes\imgui\LICENSE.txt" />
+    <Text Include="..\res\includes\imgui\TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

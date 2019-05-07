@@ -132,7 +132,7 @@ void Game::Init()
 	addShapeFromFile("../res/objs/ball.obj",-1,TRIANGLES);
 	addShape(Cube,1,LINE_LOOP);
 	shapes[BOUNDING_BOX_INDEX]->Hide();
-	addShapeCopy(1, -1, TRIANGLES);
+	//addShapeCopy(1, -1, TRIANGLES);
 
 	//addShapeCopy(3,2,LINE_LOOP);+		vao	{m_RendererID=4 }	VertexArray
 

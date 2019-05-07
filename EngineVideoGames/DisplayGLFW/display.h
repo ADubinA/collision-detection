@@ -27,7 +27,7 @@ public:
 	//static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) ;
 	//void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 	//static void window_size_callback(GLFWwindow* window, int width, int height);
-
+	GLFWwindow* get_window();
 	int closeWindow();
 	 ~Display();
 //protected:
