@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include "bezier1D.h"
 #include "kdtree.h"
-#define MINIMUM_VERTCIES_FOR_BVH 1500
+#define MINIMUM_VERTCIES_FOR_BVH 100
 
 class BVH {
 public:

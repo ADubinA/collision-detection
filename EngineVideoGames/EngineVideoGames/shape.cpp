@@ -67,8 +67,8 @@ int Shape::checkCollision(Shape * other)
 		if (picked !=-1)
 
 		{
-			if (counter >= 10)
-				return picked;
+			/*if (counter >= 10)
+				return picked;*/
 			if (other_curr->left != nullptr && other_curr->right != nullptr) {
 				other_queue.push(other_curr->left);
 				other_queue.push(other_curr->right);

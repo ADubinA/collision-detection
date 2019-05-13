@@ -235,7 +235,7 @@ void Game::Motion()
 	{
 		int p = pickedShape;
 		pickedShape = 3;
-		shapeTransformation(zLocalRotate,0.45);
+		//shapeTransformation(zLocalRotate,0.45);
 		pickedShape = p;
 	}
 }
