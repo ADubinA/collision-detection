@@ -55,7 +55,9 @@
 				case GLFW_KEY_DOWN:
 					scn->shapeTransformation(scn->yGlobalTranslate, -0.1);
 					break;
-
+				case GLFW_KEY_S:
+					scn->tmp_test_mode = !scn->tmp_test_mode;
+					break;
 			default:
 				break;
 			}

@@ -80,7 +80,7 @@ public:
 	void setPickShape(int index);
 
 	bool BoundingBox::checkCollision(BoundingBox* other);
-	void BoundingBox::updateDynamic(glm::mat4 rotmat, glm::mat4 transmat);
+	void BoundingBox::updateDynamic(glm::mat4 transmat);
 
 };
 

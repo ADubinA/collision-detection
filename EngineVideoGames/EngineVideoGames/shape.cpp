@@ -59,11 +59,9 @@ int Shape::checkCollision(Shape * other)
 		counter++;
 		other_curr = other_queue.front();
 		other_queue.pop();
-		picked = this->mesh->checkCollision(other_curr,
-											glm::translate(glm::mat4(1), glm::vec3(this->getTraslate())),
-											this->GetRot(),
-											glm::translate(glm::mat4(1), glm::vec3(other->getTraslate())),
-											other->GetRot());
+
+		picked = this->mesh->checkCollision(other_curr,this->makeTrans(),other->makeTrans());
+
 		if (picked !=-1)
 
 		{
@@ -79,7 +77,7 @@ int Shape::checkCollision(Shape * other)
 				other_queue.push(other_curr->right);
 			else
 			{
-				std::cout << other_curr->level << std::endl;
+				//std::cout << other_curr->level << std::endl;
 
 				return picked;
 			}

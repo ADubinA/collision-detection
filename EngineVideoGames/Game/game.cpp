@@ -234,8 +234,13 @@ void Game::Motion()
 	if(isActive)
 	{
 		int p = pickedShape;
-		pickedShape = 3;
-		//shapeTransformation(zLocalRotate,0.45);
+		if (this->tmp_test_mode)
+		{
+			pickedShape = 1;
+			shapeTransformation(zLocalRotate, 0.45);
+			pickedShape = 3;
+			shapeTransformation(yGlobalTranslate, -0.2);
+		}
 		pickedShape = p;
 	}
 }
