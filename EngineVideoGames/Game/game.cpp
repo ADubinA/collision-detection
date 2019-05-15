@@ -128,8 +128,8 @@ void Game::Init()
 {
 	std::vector<TransStruct> data;
 	addShape(Axis,-1,LINES);
-	//addShape(Octahedron,-1,TRIANGLES);
-	addShapeFromFile("../res/objs/ball.obj",-1,TRIANGLES);
+	addShape(Octahedron,-1,TRIANGLES);
+	//addShapeFromFile("../res/objs/ball.obj",-1,TRIANGLES);
 	addShape(Cube,1,LINE_LOOP);
 	shapes[BOUNDING_BOX_INDEX]->Hide();
 	//addShapeCopy(1, -1, TRIANGLES);

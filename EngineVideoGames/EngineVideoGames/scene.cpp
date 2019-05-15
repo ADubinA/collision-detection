@@ -34,6 +34,8 @@ using namespace glm;
 		xold = 0;
 		yold = 0;
 		isActive = false;
+		menu_mode = false;
+
 	}
 
 	Scene::Scene(vec3 position,float angle,float hwRelation,float near, float far)
