@@ -39,10 +39,7 @@ MeshConstructor::MeshConstructor(const std::string& fileName)
 	InitMesh(OBJModel(fileName).ToIndexedModel());
 }
 
-int MeshConstructor::checkCollision(BVH* other, glm::mat4 self_trans,
-															glm::mat4 self_rot,
-															glm::mat4 other_trans,
-															glm::mat4 other_rot)
+int MeshConstructor::checkCollision(BVH* other, glm::mat4 self_trans,glm::mat4 other_trans)
 
 
 {
@@ -54,8 +51,8 @@ int MeshConstructor::checkCollision(BVH* other, glm::mat4 self_trans,
 		counter++;
 		self_curr = self_queue.front();
 		self_queue.pop();
-		other->box->updateDynamic(other_rot, other_trans);
-		self_curr->box->updateDynamic(self_rot, self_trans);
+		other->box->updateDynamic(other_trans);
+		self_curr->box->updateDynamic(self_trans);
 		if (self_curr->box->checkCollision(other->box)) 
 
 		{

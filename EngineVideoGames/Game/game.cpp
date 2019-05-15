@@ -128,11 +128,11 @@ void Game::Init()
 {
 	std::vector<TransStruct> data;
 	addShape(Axis,-1,LINES);
-	addShape(Octahedron,-1,TRIANGLES);
-	//addShapeFromFile("../res/objs/ball.obj",-1,TRIANGLES);
+	//addShape(Octahedron,-1,TRIANGLES);
+	addShapeFromFile("../res/objs/ball.obj",-1,TRIANGLES);
 	addShape(Cube,1,LINE_LOOP);
 	shapes[BOUNDING_BOX_INDEX]->Hide();
-	//addShapeCopy(1, -1, TRIANGLES);
+	addShapeCopy(1, -1, TRIANGLES);
 
 	//addShapeCopy(3,2,LINE_LOOP);+		vao	{m_RendererID=4 }	VertexArray
 
@@ -149,29 +149,6 @@ void Game::Init()
 
 		}
 	}
-	/*int axis = 0;
-	for (auto& trans : data)
-	{
-		
-		pickedShape = trans.picked_shape;
-		if (trans.level == 1)
-		{
-			shapes[pickedShape]->Unhide();
-		}
-
-		if (axis==0)
-			shapeTransformation(xScale, 1.0f / float(pow(2,trans.level)));
-		else if(axis==1)
-			shapeTransformation(yScale, 1.0f / float(pow(2, trans.level)));
-		else if(axis==2)
-			shapeTransformation(zScale, 1.0f / float(pow(2, trans.level)));
-
-		shapeTransformation(xLocalTranslate, trans.data.x);
-		shapeTransformation(yLocalTranslate, trans.data.y);
-		shapeTransformation(zLocalTranslate, trans.data.z);
-		axis++;
-		axis = axis % 3;
-	}*/
 
 	//translate all scene away from camera
 	myTranslate(glm::vec3(0,0,-90),0);
@@ -234,8 +211,13 @@ void Game::Motion()
 	if(isActive)
 	{
 		int p = pickedShape;
-		pickedShape = 3;
-		shapeTransformation(zLocalRotate,0.45);
+		if (this->tmp_test_mode)
+		{
+			pickedShape = 1;
+			shapeTransformation(zLocalRotate, 0.45);
+			pickedShape = 3;
+			shapeTransformation(yGlobalTranslate, -0.2);
+		}
 		pickedShape = p;
 	}
 }

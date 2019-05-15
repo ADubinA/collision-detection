@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include "bezier1D.h"
 #include "kdtree.h"
-#define MINIMUM_VERTCIES_FOR_BVH 1500
+#define MINIMUM_VERTCIES_FOR_BVH 1000
 
 class BVH {
 public:
@@ -59,10 +59,7 @@ public:
 	MeshConstructor(const std::string& fileName);
 	
 	// returns the pickshape index of the collision. if no collision, return -1
-	int MeshConstructor::checkCollision(BVH* other,  glm::mat4 self_trans,
-																 glm::mat4 self_rot, 
-																 glm::mat4 other_trans,
-																 glm::mat4 other_rot );
+	int MeshConstructor::checkCollision(BVH* other,  glm::mat4 self_trans, glm::mat4 other_trans);
 	void Bind() {vao.Bind();}
 	void Unbind() {vao.Unbind();}
 	inline unsigned int GetIndicesNum(){return indicesNum;}
