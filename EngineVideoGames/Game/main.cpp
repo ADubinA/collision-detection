@@ -34,7 +34,7 @@ int main(int argc,char *argv[])
 		display.Clear(1.0f, 1.0f, 1.0f, 1.0f);
 
 		scn->Draw(0,0,true);
-		scn->Motion();
+		scn->Motion(menu->f);
 		if(scn->menu_mode)
 		{
 			if (!menu->created)
@@ -50,6 +50,7 @@ int main(int argc,char *argv[])
 			if (menu->created)
 			{
 				menu->destroy();
+				init(display);
 			}
 		}
 

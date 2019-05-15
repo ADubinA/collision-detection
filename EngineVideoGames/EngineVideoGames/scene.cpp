@@ -88,7 +88,7 @@ using namespace glm;
 						if (picked >= 0)
 						{
 							shapes[picked]->Unhide();
-							this->tmp_test_mode = false;
+							//this->tmp_test_mode = false;
 						}
 					}
 				}

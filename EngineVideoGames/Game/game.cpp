@@ -206,7 +206,7 @@ void Game::WhenTranslate()
 	}
 }
 
-void Game::Motion()
+void Game::Motion(float velocity)
 {
 	if(isActive)
 	{
@@ -216,7 +216,7 @@ void Game::Motion()
 			pickedShape = 1;
 			shapeTransformation(zLocalRotate, 0.45);
 			pickedShape = 3;
-			shapeTransformation(yGlobalTranslate, -0.2);
+			shapeTransformation(yGlobalTranslate, velocity);
 		}
 		pickedShape = p;
 	}
